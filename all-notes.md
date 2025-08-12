@@ -119,6 +119,8 @@ spec:
       type: frontend
 ```
 
+The template section seems not to be required because we already provide labels to find the pods to monitor, nut it's required because if a pod fails, the replicaset needs to run a new instance of the pod and that's when it uses the template section.
+
 ---
 
 ## Commands
@@ -173,4 +175,14 @@ kubectl get replicationcontroller
 ```bash
 # List the replicasets
 kubectl get replicaset
+```
+
+```bash
+# Scaling a replicaset
+# You can replace the number of replicas in the yaml file and then
+kubectl replace -f replicaset-definition.yaml
+# Or
+kubectl scale --replicas=newNumber -f replicaset-definition.yaml
+# Or
+kubectl scale --replicas=5 replicaset my-app-replicaset
 ```
