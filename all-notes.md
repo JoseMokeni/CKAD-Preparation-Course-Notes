@@ -123,7 +123,48 @@ The template section seems not to be required because we already provide labels 
 
 ---
 
+## Deployment
+
+A Deployment is a higher-level abstraction that manages ReplicaSets and provides declarative updates to applications. It allows you to define the desired state of your application, and the Deployment controller will ensure that the current state matches the desired state by creating, updating, or deleting ReplicaSets as needed.
+
+The definition of a deployment is the same as the replicaset except for the kind.
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-deployment
+  labels:
+    app: my-app
+    type: frontend
+spec:
+  template:
+    # Here goes a the pod definition
+    metadata:
+      name: my-app-pod
+      labels:
+        app: my-app
+        type: frontend
+    spec:
+      containers: # List / Array
+        - name: nginx-container
+          image: nginx
+  replicas: 3
+  selector:
+    matchLabels:
+      type: frontend
+```
+
+---
+
 ## Commands
+
+### Useful commands
+
+```bash
+# Display file content with hidden characters
+cat -A deployment-definition.yaml
+```
 
 ### Pod and Cluster Management
 
@@ -185,4 +226,11 @@ kubectl replace -f replicaset-definition.yaml
 kubectl scale --replicas=newNumber -f replicaset-definition.yaml
 # Or
 kubectl scale --replicas=5 replicaset my-app-replicaset
+```
+
+### Deployments
+
+```bash
+# List deployments
+kubectl get deployments
 ```
