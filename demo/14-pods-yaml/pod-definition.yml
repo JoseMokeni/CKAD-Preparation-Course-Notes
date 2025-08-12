@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-app-pod
+  labels:
+    app: my-app
+    # You can add more labels if you want,
+    # it will help to group or filter the pods after
+    type: frontend
+spec:
+  # This section will not be the same for different object types
+  containers: # List / Array
+    - name: nginx-container
+      image: nginx
