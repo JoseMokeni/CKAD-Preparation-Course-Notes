@@ -155,82 +155,59 @@ spec:
       type: frontend
 ```
 
----
+## Namespaces
 
-## Commands
+A namespace is a way to divide cluster resources between multiple users or teams. It allows you to create isolated environments within the same cluster, where resources can be managed independently.
 
-### Useful commands
+A default namespace is automatically created by kubernetes when a cluster is initialized.
 
-```bash
-# Display file content with hidden characters
-cat -A deployment-definition.yaml
+To connect to a service in the same namespace, you can just use the service name without any prefix.
+But to connect to a service in a different namespace, you need to use the full name, including the namespace, like this: `service-name.namespace.svc.cluster.local`.
+
+To create a resource in a specific namespace, you can specify the namespace in the metadata section of the resource definition YAML file, like this:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-app-pod
+  namespace: my-namespace
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx
 ```
 
-### Pod and Cluster Management
-
-- `kubectl run nginx --image nginx` → run a nginx pod using image nginx
-- `kubectl get pods`
-- `kubectl run hello-world` → run a pod named hello-world
-- `kubectl cluster-info` → display cluster information
-- `kubectl get nodes` → list all nodes in the cluster
-
-### Pod YAML and Configuration
+To create a namespace, you can use the following command:
 
 ```bash
-# Create pod using yaml file
-kubectl create -f pod-definition.yml
+kubectl create namespace my-namespace
 ```
 
-```bash
-# Describe pod (see details about it)
-kubectl describe pod my-app-pod
+Or, you can create a namespace using a YAML file:
+
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: my-namespace
 ```
 
-```bash
-# List pods
-kubectl get pods
-```
+### ResourceQuota
 
-```bash
-# Create pod configuration using kubectl run
-kubectl run redis --image=redis --dry-run=client -o yaml [> pod-definition.yml]
-```
+To limit resource usage of a namespace, you can create a resource quota.
 
-```bash
-# Extract the definition file
-kubectl get pod my-app-pod -o yaml > pod-definition.yml
-```
-
-```bash
-# Change the image name in the pod definition
-kubectl set image pod/my-app-pod nginx-container=nginx:latest
-```
-
-### Replication Controller and ReplicaSet
-
-```bash
-# List the replication controllers
-kubectl get replicationcontroller
-```
-
-```bash
-# List the replicasets
-kubectl get replicaset
-```
-
-```bash
-# Scaling a replicaset
-# You can replace the number of replicas in the yaml file and then
-kubectl replace -f replicaset-definition.yaml
-# Or
-kubectl scale --replicas=newNumber -f replicaset-definition.yaml
-# Or
-kubectl scale --replicas=5 replicaset my-app-replicaset
-```
-
-### Deployments
-
-```bash
-# List deployments
-kubectl get deployments
+```yaml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-quota
+  namespace: dev
+spec:
+  hard:
+    pods: "10"
+    requests.cpu: "4"
+    requests.memory: 5Gi
+    limits.cpu: "10"
+    limits.memory: 10Gi
 ```
