@@ -211,3 +211,20 @@ spec:
     limits.cpu: "10"
     limits.memory: 10Gi
 ```
+
+## Commands and arguments
+
+The command field replaces the entrypoint of the container, while the args field provides the arguments to the command.
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-app-pod
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx
+      command: ["/bin/bash"]
+      args: ["-c", "echo Hello Kubernetes!"]
+```

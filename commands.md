@@ -7,6 +7,11 @@
 cat -A deployment-definition.yaml
 ```
 
+```bash
+# Show the distribution
+cat /etc/*release*
+```
+
 ## Pod and Cluster Management
 
 - `kubectl run nginx --image nginx` → run a nginx pod using image nginx
