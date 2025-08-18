@@ -228,3 +228,34 @@ spec:
       command: ["/bin/bash"]
       args: ["-c", "echo Hello Kubernetes!"]
 ```
+
+## Environment variables
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-app-pod
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx
+      ports:
+        - containerPort: 80
+      env:
+        # Plain environment variable
+        - name: MY_ENV_VAR
+          value: "Hello World"
+        # Environment variable from a configmap
+        - name: MY_CONFIGMAP_VAR
+          valueFrom:
+            configMapKeyRef:
+              name: my-configmap
+              key: my-key
+        # Environment variable from a secret
+        - name: MY_SECRET_VAR
+          valueFrom:
+            secretKeyRef:
+              name: my-secret
+              key: my-key
+```
