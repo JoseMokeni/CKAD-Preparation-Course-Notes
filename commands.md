@@ -12,6 +12,13 @@ cat -A deployment-definition.yaml
 cat /etc/*release*
 ```
 
+```bash
+# Encode to base64
+echo -n "sensitivevariable" | base64
+# Decode from base64
+echo "c2Vuc2l0aXZldmFyaWFibGU=" | base64 --decode
+```
+
 ## Pod and Cluster Management
 
 - `kubectl run nginx --image nginx` → run a nginx pod using image nginx
@@ -132,4 +139,25 @@ kubectl config set-context $(kubectl config current-context) --namespace=dev
 ```bash
 # List the pods of all namespaces
 kubectl get pods --all-namespaces
+```
+
+## ConfigMaps
+
+```bash
+kubectl create configmap my-configmap --from-literal=my-key=my-value --from-literal=my-key-2=my-value-2
+```
+
+```bash
+# Create config map from file
+kubectl create configmap my-configmap --from-file=my-file.properties
+```
+
+## Secrets
+
+```bash
+kubectl create secret generic app-secret --from-literal=APP_SECRET=sensitivevariable
+```
+
+```bash
+kubectl create secret generic app-secret --from-file=my-file.properties
 ```

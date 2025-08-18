@@ -259,3 +259,108 @@ spec:
               name: my-secret
               key: my-key
 ```
+
+## ConfigMaps
+
+ConfigMaps are used to store non-confidential data in key-value pairs. They can be used to configure applications without having to rebuild container images. ConfigMaps can be consumed in pods as environment variables, command-line arguments, or as configuration files in a volume.
+
+There are two steps:
+
+- Create the config map
+- Inject the config map into the pod
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  APP_COLOR: blue
+  APP_MODE: prod
+```
+
+### Pod definition importing environment variables from configmap
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    name: simple-webapp-color
+  name: simple-webapp-color
+spec:
+  containers:
+    - name: simple-webapp-color
+      image: simple-webapp-color
+      ports:
+        - containerPort: 8080
+      envFrom:
+        - configMapRef:
+            name: app-config
+```
+
+### Pod definition with config map as volume
+
+```yaml
+volume:
+  - name: app-config-volume
+    configMap:
+      name: app-config
+```
+
+## Secrets
+
+Secrets are like config maps but values are stored in an encoded way.
+
+Note: Secrets are not encrypted, they're only encoded.
+
+To create a secret using imperative command:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secret
+data:
+  APP_SECRET: c2Vuc2l0aXZldmFyaWFibGU= # base64 encoded value of "sensitivevariable"
+```
+
+### Pod definition importing env vars from secret
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-app-pod
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx
+      ports:
+        - containerPort: 80
+      envFrom:
+        - secretRef:
+            name: app-secret
+```
+
+### Secrets in pods as volumes
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-app-pod
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx
+      ports:
+        - containerPort: 80
+      volumeMounts:
+        - name: secret-volume
+          mountPath: /etc/secret
+  volumes:
+    - name: secret-volume
+      secret:
+        secretName: app-secret
+```
